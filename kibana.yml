@@ -1,0 +1,43 @@
+version: "3.7"
+
+configs:
+  logsearch-kibana:
+    name: logsearch-kibana-${LOGSEARCH_KIBANA:-3}
+    file: ./kibana.yml
+
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.4.2
+    environment:
+      - "ELASTICSEARCH_HOSTS=http://master1:9200"
+    networks:
+      - esnet
+      - proxy
+    configs:
+      - source: logsearch-kibana
+        target: /usr/share/kibana/config/kibana.yml
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.myapp.rule=Host(`web.sharenj.org`)"
+        # - "traefik.http.routers.myapp.tls.certresolver=le"
+        - "traefik.http.routers.myapp.entrypoints=web"
+        - "traefik.http.services.myapp.loadbalancer.server.port=5601"
+        - "traefik.http.services.myapp.loadbalancer.passhostheader=true"
+
+      mode: replicated
+      replicas: 1
+      update_config:
+        failure_action: rollback
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+
+networks:
+  esnet:
+    external: true
+  proxy:
+    external: true

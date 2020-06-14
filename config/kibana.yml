@@ -1,0 +1,10 @@
+# Default Kibana configuration from kibana-docker.
+elasticsearch.hosts: "http://master1:9200"
+server.port: 5601
+server.host: 0.0.0.0
+server.name: "master1"
+elasticsearch.pingTimeout: 180000
+elasticsearch.requestTimeout: 3000000
+vega.enableExternalUrls: true
+xpack.monitoring.enabled: true
+xpack.monitoring.kibana.collection.enabled: true
