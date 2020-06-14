@@ -1,0 +1,51 @@
+version: '3.7'
+services:
+  traefik:
+    image: traefik:latest
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.traefik == true
+      update_config:
+        order: start-first
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.t.middlewares=authtraefik"
+        - "traefik.http.services.dummy-service.loadbalancer.server.port=59999"
+        - "traefik.http.middlewares.test-auth.basicauth.users=test:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/
+    command:
+      - "--api"
+      - "--acme"
+      - "--docker"
+      - "--docker.watch"
+      - "--docker.swarmmode"
+      # - "--docker.domain=traefik"
+      - "--acme.storage=/etc/traefik/acme/acme.json"
+      - "--acme.entryPoint=https"
+      - "--acme.httpChallenge.entryPoint=http"
+      - "--acme.onhostrule=true"
+      - "--acme.email=development@sharenj.org"
+      - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
+      - "--entrypoints=Name:https Address::443 TLS"
+      - "--defaultentrypoints=http,https"
+      - "--traefikLog.filePath=/tmp/logs/traefik.log"
+      - "--accessLog.filePath=/tmp/logs/access.log"
+      - "--acme.acmelogging=true"
+      - "--logLevel=DEBUG"
+      - "--accessLog"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    networks:
+      - traefik-public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/home/bruno/acme.json:/etc/traefik/acme/acme.json"
+
+networks:
+  traefik-public:
+    external: true

@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  whoami:
+    image: containous/whoami
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
+        - "traefik.http.services.whoami-service.loadbalancer.server.port=8000"
+        - "traefik.docker.network=traefik-public"
+        - "traefik.port=80"
+
+networks:
+  traefik-public:
+    external: true
