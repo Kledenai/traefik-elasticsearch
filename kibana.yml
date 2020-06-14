@@ -1,10 +1,4 @@
 version: "3.7"
-
-configs:
-  logsearch-kibana:
-    name: logsearch-kibana-${LOGSEARCH_KIBANA:-3}
-    file: ./kibana.yml
-
 services:
   kibana:
     image: docker.elastic.co/kibana/kibana:7.4.2
@@ -35,6 +29,11 @@ services:
         condition: on-failure
         delay: 10s
         max_attempts: 3
+
+configs:
+  logsearch-kibana:
+    name: logsearch-kibana-${LOGSEARCH_KIBANA:-3}
+    file: ./config/kibana.yml
 
 networks:
   esnet:
