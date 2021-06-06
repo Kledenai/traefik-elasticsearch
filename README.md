@@ -98,13 +98,13 @@ After that we can start the services.
 Let's start the elasticsearch service first
 
 ```bash
-
+docker stack deploy -c elasticsearch.yml es
 ```
 
 This command will start traefik which is our proxy
 
 ```bash
-docker stack deploy -c stack-proxy.yml proxy
+docker stack deploy -c traefik.yml proxy
 ```
 
 
