@@ -15,7 +15,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.t.middlewares=authtraefik"
         - "traefik.http.services.dummy-service.loadbalancer.server.port=59999"
-        - "traefik.http.middlewares.test-auth.basicauth.users=test:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/
+        - "traefik.http.middlewares.test-auth.basicauth.users=test:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/"
     command:
       - "--api"
       - "--acme"
